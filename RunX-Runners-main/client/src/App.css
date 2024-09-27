@@ -1,0 +1,188 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&display=swap');
+
+body {
+  font-family: 'IBM Plex Sans Thai', sans-serif;
+}
+
+#root {
+  /* max-width: 1280px; */
+  /* margin: 0 auto; */
+  /* padding: 2rem; */
+  text-align: center;
+  font-family: 'IBM Plex Sans Thai', sans-serif;
+}
+/* CSS for Adjusting the Button Styles */
+
+.select-button {
+  font-size: 12px; /* Adjust font size */
+  padding: 10px; /* Adjust padding */
+  display: inline-flex;
+  align-items: center; /* Aligns content center vertically */
+  justify-content: space-between; /* Ensures the text and arrow are spaced well */
+  border: 1px solid #ddd; /* Border to match style */
+  border-radius: 8px; /* Rounded corners */
+  background-color: #f7f7f7; /* Light background color */
+  width: 200px; /* Width for consistency */
+}
+
+.select-button select {
+  appearance: none; /* Remove default arrow */
+  background: transparent;
+  border: none;
+  outline: none;
+  width: 100%; /* Make the select full-width */
+  padding-left: 5px; /* Add some padding to the left */
+}
+/* Apply font size and other styling to the select dropdown */
+select {
+  font-size: 14px;  /* This affects the font size of the options */
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #f7f7f7;
+  width: 200px;
+}
+
+.select-button::after {
+  content: "\25BC"; /* Downward arrow */
+  font-size: 12px;
+  position: absolute;
+  right: 15px;
+}
+
+.logo {
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
+}
+.logo:hover {
+  filter: drop-shadow(0 0 2em #646cffaa);
+}
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em #61dafbaa);
+}
+
+.overlayimg-black:after {
+  content:'\A';
+  position:absolute;
+  width:100%; height:100%;
+  top:0; left:0;
+  background-image: linear-gradient(to top, rgba(0,0,0,0.6), rgba(0,0,0,0));
+  opacity:1;
+}
+
+.overlayimg-black-equal:after {
+  content:'\A';
+  position:absolute;
+  width:100%; height:100%;
+  top:0; left:0;
+  background-image: linear-gradient(to top, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4));
+  opacity:1;
+}
+
+.overlayimg-black-100:after {
+  content:'\A';
+  position:absolute;
+  width:100%; height:100%;
+  top:0; left:0;
+  background-image: linear-gradient(to top, rgba(0,0,0,1), rgba(0,0,0,0));
+  opacity:1;
+}
+
+.label-distance-in-event {
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 100ms;
+  opacity: 0.6;
+  border-bottom: 4px solid rgba(0, 168, 222, 0);
+}
+
+.label-distance-in-event:focus {
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 100ms;
+  
+  opacity: 1;
+  border-bottom: 4px solid rgba(0, 168, 222, 1);
+}
+
+.label-distance-in-bp {
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 100ms;
+  opacity: 0.6;
+  border-radius: 8px;
+  border:  1px solid #DFDFDF;
+}
+
+.label-distance-in-bp.active {
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 100ms;
+  
+  opacity: 1;
+  background: rgba(0, 168, 222, 1);
+  color:white;
+  /*border-bottom: 10px solid rgba(0, 168, 222, 1);*/
+}
+
+.data-\[state\=on\]\:filter-range[data-state=on] {
+  background-color: rgba(0, 168, 222, 0.1) !important;
+  border-color:rgba(0, 168, 222, 1) !important;
+  color: rgba(0, 168, 222, 1) !important;
+}
+
+.data-\[state\=on\]\:filter-range[data-state=on]:after {
+  /* content:"AA"; */
+  padding-top:0.3rem;
+  padding-right:0;
+  content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none'%3E%3Cg clip-path='url(%23clip0_85_13)'%3E%3Cpath d='M6.66698 11.8333H6.65698C6.51231 11.8307 6.37565 11.7647 6.28232 11.6533L2.94898 7.65335C2.77165 7.44135 2.80032 7.12602 3.01298 6.94935C3.22498 6.77268 3.53965 6.80068 3.71765 7.01335L6.68098 10.5693L12.295 4.33202C12.4803 4.12668 12.7963 4.11068 13.0016 4.29468C13.207 4.47935 13.2236 4.79535 13.039 5.00135L7.03898 11.668C6.94365 11.7733 6.80898 11.8333 6.66698 11.8333Z' fill='%2300A8DE'/%3E%3C/g%3E%3Cdefs%3E%3CclipPath id='clip0_85_13'%3E%3Crect width='16' height='16' fill='white'/%3E%3C/clipPath%3E%3C/defs%3E%3C/svg%3E");
+}
+
+/* .data-\[state\=on\]\:hightlight-tab-blue[data-state=on] {
+
+} */
+
+.data-\[state\=active\]\:hightlight-tab-blue[data-state=active]:before {
+  content:"A";
+  color:#fff;
+  border-left: 0.2rem solid rgba(0, 168, 222, 1);
+}
+
+.hightlight-tab-blue {
+  content:"A";
+  color:#fff;
+  border-left: 0.2rem solid rgba(0, 168, 222, 1);
+}
+
+.navShadowBottom {
+  box-shadow:rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;
+}
+
+.boxShadow0Offset {
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 6px 2px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;
+}
+
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+
+.card {
+  padding: 2em;
+}
+
+.read-the-docs {
+  color: #888;
+}

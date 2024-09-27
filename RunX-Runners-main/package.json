@@ -1,0 +1,39 @@
+{
+  "name": "irun",
+  "version": "1.0.50",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "bun run --watch src/server.ts",
+    "prisma": "prisma"
+  },
+  "dependencies": {
+    "@elysiajs/cookie": "^0.7.0",
+    "@elysiajs/cors": "^0.7.1",
+    "@elysiajs/jwt": "^0.7.0",
+    "@elysiajs/swagger": "^0.7.3",
+    "@google-cloud/storage": "^7.12.1",
+    "@prisma/client": "5.5.2",
+    "@types/mime": "^4.0.0",
+    "@types/moment": "^2.13.0",
+    "@types/uuid": "^10.0.0",
+    "elysia": "^0.7.31",
+    "elysia-autoroutes": "^0.4.0",
+    "lodash": "^4.17.21",
+    "mime": "^4.0.4",
+    "moment": "^2.30.1",
+    "prisma": "5.5.2",
+    "uuid": "^10.0.0",
+    "xlsx": "^0.18.5"
+  },
+  "devDependencies": {
+    "@faker-js/faker": "^8.1.0",
+    "bun-types": "^1.1.18",
+    "csv-parser": "^3.0.0",
+    "fast-csv": "^4.3.6",
+    "fs": "^0.0.1-security"
+  },
+  "prisma": {
+    "seed": "node scripts/seed.js"
+  },
+  "module": "src/index.js"
+}

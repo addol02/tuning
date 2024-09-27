@@ -1,0 +1,75 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Runner {
+  id        Int    @id @default(autoincrement())
+  email     String @unique
+  password  String
+  firstname String
+  lastname  String
+}
+
+model Events {
+  id          Int       @id @default(autoincrement())
+  title       String
+  startperiod DateTime? @default(now())
+  endperiod   DateTime? @default(now())
+  cover_img   String?
+  location    String
+  province    String?
+  logo_img    String?
+  races       Races[]
+}
+
+model Races {
+  id          Int          @id @default(autoincrement())
+  race_title      String
+  distance    Int
+  starttime   DateTime     @default(now())
+  endtime     DateTime     @default(now())
+  eventid     Int
+  racerunners Racerunner[]
+  events      Events       @relation(fields: [eventid], references: [id])
+}
+
+model Racerunner {
+  id        Int     @id @default(autoincrement())
+  entrytime String
+  raceid    Int
+  age       Int
+  gender    Gender
+  nation    String
+  score     Int
+  firstname String
+  lastname  String
+  irunid    Int     @default(0)
+  rank_race String?
+  races     Races   @relation(fields: [raceid], references: [id])
+}
+
+model Reqchangeinfo {
+  id           Int      @id @default(autoincrement())
+  firstname    String
+  lastname     String
+  file_url     String
+  status       Int      @default(0)
+  racerunnerid Int
+  created_at   DateTime @default(now())
+}
+
+model Administrator {
+  id       Int    @id @default(autoincrement())
+  email    String @unique
+  password String
+}
+
+enum Gender {
+  M
+  F
+}
