@@ -30,7 +30,7 @@ import { enUS } from "date-fns/locale";
 import _ from "lodash"
 import { Skeleton } from "@/components/ui/skeleton.tsx";
 
-import { api } from "@/Elysia";
+import { api } from "@/Elysia.ts";
 
 
 export interface ObjectSort {
@@ -65,7 +65,7 @@ export interface EventType {
 }
 
 export interface RacesType {
-    rtitle: string;
+    race_title: string;
     resultrunnerid: number;
     age: number;
     count: number;
@@ -120,6 +120,7 @@ export interface Props {
 
 
 function Profile() {
+
     const [expandedEventIds, setExpandedEventIds] = useState<Set<string>>(new Set());
 
     const toggleExpand = (eventid: string) => {
@@ -181,14 +182,37 @@ function Profile() {
     };
 
 
+
     const getRacesRunner = async (id: string) => {
-        setLoading(false);
-        const { data: value, error: errorInfo } = await api.api.runners[id].get();
-        if (value && !errorInfo) {
-            setProfileData(value.data);
-            setLoading(true);
+        try {
+            // Start by indicating loading state
+            setLoading(false);
+
+            // Make the API request and destructure the response
+            const { data: value, error: errorInfo } = await api.api.runners[id].get();
+
+            // Check for errors
+            if (errorInfo) {
+                console.error('Error fetching data:', errorInfo);
+                return;
+            }
+
+            // If data is present and no errors
+            if (value) {
+                // Log the value for debugging
+                console.log('Fetched profile data:', value.data);
+
+                // Set the fetched profile data to state
+                setProfileData(value.data);
+
+                // Once data is set, update the loading state
+                setLoading(true);
+            }
+        } catch (error) {
+            // Handle any unexpected errors
+            console.error('An unexpected error occurred:', error);
         }
-    }
+    };
 
 
     useEffect(() => {
@@ -196,6 +220,9 @@ function Profile() {
             getRacesRunner(id);
         }
     }, []);
+
+    console.log(profileData)
+
 
     const [activeButton, setActiveButton] = useState<number>();
 
@@ -499,9 +526,9 @@ function Profile() {
 
                                                         {/* Event Button with Label */}
                                                         <div className="flex flex-col items-start">
-                                                            <label htmlFor="eventFilter" className="mb-1 text-black font-medium">Event</label>
+                                                            <label htmlFor="eventFilter" className="mb-1 text-black font-medium">Series</label>
                                                             <div className="relative inline-block w-[220px]">
-                                                                <label className="absolute left-4 top-1 text-gray-400 text-xs pointer-events-none">Event</label>
+                                                                <label className="absolute left-4 top-1 text-gray-400 text-xs pointer-events-none">Series</label>
                                                                 <select
                                                                     id="eventFilter"
                                                                     value={selectedEvent}
@@ -509,7 +536,7 @@ function Profile() {
                                                                     className="border rounded-md px-3 py-1 pt-4 text-left bg-gray-100 shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-300"
                                                                     style={{ width: '100%', height: '44px' }}
                                                                 >
-                                                                    <option value="All">All Events</option>
+                                                                    <option value="All">All Serires</option>
                                                                     {uniqueEvents
                                                                         .filter((event): event is { id: string; title: string } => event !== null) // Ensure event is not null
                                                                         .map((event: { id: string; title: string }, index: number) => (
@@ -522,7 +549,7 @@ function Profile() {
                                                         </div>
                                                     </div>
                                                     {/* Single Table for All Races */}
-                                                    <div className="overflow-x-auto mb-10">
+                                                    <div className="overflow-x-auto h-96">
                                                         <table className="min-w-full border-collapse table-auto">
                                                             <thead>
                                                                 <tr className="bg-gray-100">
@@ -534,114 +561,116 @@ function Profile() {
                                                                 </tr>
                                                             </thead>
                                                             <tbody>
-    {Object.values(
-        filteredData
-            .flatMap((year) => _.get(profileData?.filterOnYear, `${year}`, []))
-            .filter((item: RacesType) => selectedEvent === 'All' || String(item.eventid) === selectedEvent)
-            .reduce((acc: Record<string, RacesType>, current: RacesType) => {
-                if (selectedEvent === 'All') {
-                    if (acc[current.eventid]) {
-                        const existingEventDate = new Date(acc[current.eventid].starttime).getTime();
-                        const currentEventDate = new Date(current.starttime).getTime();
-                        if (currentEventDate > existingEventDate) {
-                            acc[current.eventid] = current;
-                        }
-                    } else {
-                        acc[current.eventid] = current;
-                    }
-                } else {
-                    acc[current.raceid] = current;
-                }
-                return acc;
-            }, {})
-    ).map((item: RacesType, z: number) => (
-        <>
-            <tr key={z} className="border-t">
-                {/* Date (Start Time) */}
-                <td className="border px-4 py-2 text-left">
-                    {format(new Date(item.starttime), "dd MMM yy", { locale: enUS })} {/* Change to use "MMM" for 3-char month */}
-                </td>
+                                                                {Object.values(
+                                                                    filteredData
+                                                                        .flatMap((year) => _.get(profileData?.filterOnYear, `${year}`, []))
+                                                                        .filter((item: RacesType) => selectedEvent === 'All' || String(item.eventid) === selectedEvent)
+                                                                        .reduce((acc: Record<string, RacesType>, current: RacesType) => {
+                                                                            if (selectedEvent === 'All') {
+                                                                                if (acc[current.eventid]) {
+                                                                                    const existingEventDate = new Date(acc[current.eventid].starttime).getTime();
+                                                                                    const currentEventDate = new Date(current.starttime).getTime();
+                                                                                    if (currentEventDate > existingEventDate) {
+                                                                                        acc[current.eventid] = current;
+                                                                                    }
+                                                                                } else {
+                                                                                    acc[current.eventid] = current;
+                                                                                }
+                                                                            } else {
+                                                                                acc[current.raceid] = current;
+                                                                            }
+                                                                            return acc;
+                                                                        }, {})
+                                                                ).map((item: RacesType, z: number) => (
+                                                                    <>
+                                                                        <tr key={z} className="border-t">
+                                                                            {/* Date (Start Time) */}
+                                                                            <td className="border px-4 py-2 text-left">
+                                                                                {format(new Date(item.starttime), "dd MMM yy", { locale: enUS })}
+                                                                            </td>
 
-                {/* Race/Event Name */}
-                <td className="border px-4 py-2 text-left">
-                    <div className="flex justify-between items-center">
-                        {/* Display the race or event name */}
-                        <Link to={`/events/${item.eventid}`} className="text-[#00A8DE]">
-                            {item.title}
-                        </Link>
+                                                                            {/* Race/Event Name */}
+                                                                            <td className="border px-4 py-2 text-left">
+                                                                                <div className="flex justify-between items-center">
+                                                                                    {/* Conditionally display race name based on selectedEvent */}
+                                                                                    <Link to={`/events/${item.eventid}`} className="text-[#00A8DE]">
+                                                                                        {selectedEvent === 'All'
+                                                                                            ? (expandedEventIds.has(item.eventid)
+                                                                                                ? `${item.title} - ${item.race_title}`  // Show title + race_title if dropdown is expanded
+                                                                                                : item.title)  // Show only title if not expanded
+                                                                                            : item.race_title}  {/* Show only race_title when selectedEvent !== 'All' */}
+                                                                                    </Link>
 
-                        {/* Dropdown button to toggle races */}
-                        {selectedEvent === 'All' && (
-                            <button
-                                onClick={() => toggleExpand(item.eventid)}
-                                className="ml-2 px-2 py-1 text-[#00A8DE] text-sm flex items-center"
-                            >
-                                <span className="mr-1">Race</span>
-                                {/* Dropdown icon */}
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    strokeWidth="1.5"
-                                    stroke="currentColor"
-                                    className="w-4 h-4 text-gray-400"
-                                >
-                                    <path
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        d="M3 4.5h18M6 9l6 6 6-6"
-                                    />
-                                </svg>
-                            </button>
-                        )}
-                    </div>
-                </td>
+                                                                                    {/* Dropdown button to toggle races */}
+                                                                                    {selectedEvent === 'All' && (
+                                                                                        <button
+                                                                                            onClick={() => toggleExpand(item.eventid)}
+                                                                                            className="ml-2 px-2 py-1 text-[#00A8DE] text-sm flex items-center"
+                                                                                        >
+                                                                                            <span className="mr-1">Series</span>
+                                                                                            {/* Dropdown icon */}
+                                                                                            <svg
+                                                                                                xmlns="http://www.w3.org/2000/svg"
+                                                                                                fill="none"
+                                                                                                viewBox="0 0 24 24"
+                                                                                                strokeWidth="1.5"
+                                                                                                stroke="currentColor"
+                                                                                                className="w-4 h-4 text-gray-400"
+                                                                                            >
+                                                                                                <path
+                                                                                                    strokeLinecap="round"
+                                                                                                    strokeLinejoin="round"
+                                                                                                    d="M3 4.5h18M6 9l6 6 6-6"
+                                                                                                />
+                                                                                            </svg>
+                                                                                        </button>
+                                                                                    )}
+                                                                                </div>
+                                                                            </td>
 
-                {/* Distance */}
-                <td className="border px-4 py-2 text">{item.distance}K</td>
+                                                                            {/* Distance */}
+                                                                            <td className="border px-4 py-2 text">{item.distance}K</td>
 
-                {/* Time */}
-                <td className="border px-4 py-2 text">{item.entrytime}</td>
+                                                                            {/* Time */}
+                                                                            <td className="border px-4 py-2 text">{item.entrytime}</td>
 
-                {/* Ranking */}
-                <td className="border px-4 py-2 text">
-                    {item.rank_race}/{item.count}
-                </td>
-            </tr>
+                                                                            {/* Ranking */}
+                                                                            <td className="border px-4 py-2 text">
+                                                                                {item.rank_race}/{item.count}
+                                                                            </td>
+                                                                        </tr>
 
-            {/* Conditionally render races with the same eventid when expanded */}
-            {expandedEventIds.has(item.eventid) && selectedEvent === 'All' &&
-                filteredData
-                    .flatMap((year) => _.get(profileData?.filterOnYear, `${year}`, []))
-                    .filter((race: RacesType) => race.eventid === item.eventid && race.raceid !== item.raceid)
-                    .map((race: RacesType, index: number) => (
-                        <tr key={index} className="border-t bg-gray-100">
-                            {/* Additional races */}
-                            <td className="border px-4 py-2 text-left">
-                                {format(new Date(race.starttime), "dd MMM yy", { locale: enUS })} {/* Shortened month */}
-                            </td>
-                            <td className="border px-4 py-2 text-left">
-                                <Link to={`/races/${race.raceid}`} className="text-[#00A8DE]">
-                                    {race.title}
-                                </Link>
-                            </td>
-                            <td className="border px-4 py-2 text">{race.distance}K</td>
-                            <td className="border px-4 py-2 text">{race.entrytime}</td>
-                            <td className="border px-4 py-2 text">
-                                {race.rank_race}/{race.count}
-                            </td>
-                        </tr>
-                    ))
-            }
-        </>
-    ))}
-</tbody>
+                                                                        {/* Conditionally render races with the same eventid when expanded */}
+                                                                        {expandedEventIds.has(item.eventid) && selectedEvent === 'All' &&
+                                                                            filteredData
+                                                                                .flatMap((year) => _.get(profileData?.filterOnYear, `${year}`, []))
+                                                                                .filter((race: RacesType) => race.eventid === item.eventid && race.raceid !== item.raceid)
+                                                                                .map((race: RacesType, index: number) => {
+                                                                                    const paceData = profileData?.allTimePaces?.find((pace) => pace.raceid === race.raceid);
 
-
-
-
-
-
+                                                                                    return (
+                                                                                        <tr key={index} className="border-t bg-gray-100">
+                                                                                            {/* Additional races */}
+                                                                                            <td className="border px-4 py-2 text-left">
+                                                                                                {format(new Date(race.starttime), "dd MMM yy", { locale: enUS })}
+                                                                                            </td>
+                                                                                            <td className="border px-4 py-2 text-left">
+                                                                                                <Link to={`/races/${race.raceid}`} className="text-[#00A8DE]">
+                                                                                                    {`${race.title} - ${race.race_title}`} {/* Concatenate title and race_title in expanded rows */}
+                                                                                                </Link>
+                                                                                            </td>
+                                                                                            <td className="border px-4 py-2 text">{race.distance} K</td>
+                                                                                            <td className="border px-4 py-2 text">{race.entrytime}</td>
+                                                                                            <td className="border px-4 py-2 text">
+                                                                                                {race.rank_race}/{race.count}
+                                                                                            </td>
+                                                                                        </tr>
+                                                                                    );
+                                                                                })
+                                                                        }
+                                                                    </>
+                                                                ))}
+                                                            </tbody>
 
 
 

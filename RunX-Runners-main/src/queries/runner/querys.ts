@@ -144,7 +144,8 @@ export async function getRacesWithRunner (db: PrismaClient, id: string) {
         subquery.nation,
         subquery.gender,
         subquery.distance,
-        subquery.title,
+        subquery.race_title, -- Changed to reference race title
+        subquery.title, 
         subquery.location,
         subquery.province,
         subquery.entrytime,
@@ -165,10 +166,10 @@ export async function getRacesWithRunner (db: PrismaClient, id: string) {
         rcr.gender,
         r.distance,
         r.starttime,
-        r.id,
+        r.id AS raceid,
+        r.title AS race_title, -- Select the race title here
         ev.title,
         ev.id AS eventid,
-        rcr.raceid,
         rcr.rank_race,
         ev.province,
         ev.location
@@ -179,19 +180,20 @@ export async function getRacesWithRunner (db: PrismaClient, id: string) {
     LEFT JOIN
         "Events" ev ON ev.id = r.eventid 
     WHERE
-        LOWER(CONCAT(rcr.firstname, ' ', rcr.lastname)) = ${splitFullname? splitFullname[0] + ' ' + splitFullname[1] : ''}
+        LOWER(CONCAT(rcr.firstname, ' ', rcr.lastname)) = ${splitFullname ? splitFullname[0] + ' ' + splitFullname[1] : ''}
     GROUP BY 
-        r.id, r.distance, rcr.entrytime, rcr.firstname, rcr.lastname, rcr.age, rcr.nation, rcr.gender, r.starttime, ev.title, ev.id, rcr.rank_race, rcr.raceid, ev.province, ev.location, eventid, resultrunnerid
+        rcr.id, rcr.entrytime, rcr.firstname, rcr.lastname, rcr.age, rcr.nation, rcr.gender, r.distance, r.starttime, r.title, ev.title, ev.id, rcr.rank_race, r.id, ev.province, ev.location
     ORDER BY
-        r.starttime ASC) 
-    AS subquery
-    INNER JOIN
+        r.starttime ASC
+    ) AS subquery
+INNER JOIN
     "Racerunner" rcr ON rcr.raceid = subquery.raceid
-    GROUP BY
-        subquery.eventid, subquery.firstname, subquery.lastname, subquery.age, subquery.nation, subquery.gender, subquery.entrytime, subquery.raceid, subquery.rank_race, subquery.distance, subquery.title, subquery.location, subquery.province, subquery.starttime, subquery.resultrunnerid
-    ORDER BY
-    subquery.entrytime
-    `
+GROUP BY
+    subquery.eventid, subquery.firstname, subquery.lastname, subquery.age, subquery.nation, subquery.gender, subquery.entrytime, subquery.raceid, subquery.rank_race, subquery.distance, subquery.race_title, subquery.title, subquery.location, subquery.province, subquery.starttime, subquery.resultrunnerid
+ORDER BY
+    subquery.entrytime;
+`
+
 
     // const allTimePacesData = await db.$queryRaw<any>`
     // SELECT 

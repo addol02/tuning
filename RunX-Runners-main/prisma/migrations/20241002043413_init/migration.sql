@@ -29,7 +29,7 @@ CREATE TABLE "Events" (
 -- CreateTable
 CREATE TABLE "Races" (
     "id" SERIAL NOT NULL,
-    "race_title" TEXT NOT NULL,
+    "title" TEXT NOT NULL,
     "distance" INTEGER NOT NULL,
     "starttime" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "endtime" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -63,12 +63,25 @@ CREATE TABLE "Reqchangeinfo" (
     "file_url" TEXT NOT NULL,
     "status" INTEGER NOT NULL DEFAULT 0,
     "racerunnerid" INTEGER NOT NULL,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "Reqchangeinfo_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateTable
+CREATE TABLE "Administrator" (
+    "id" SERIAL NOT NULL,
+    "email" TEXT NOT NULL,
+    "password" TEXT NOT NULL,
+
+    CONSTRAINT "Administrator_pkey" PRIMARY KEY ("id")
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "Runner_email_key" ON "Runner"("email");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Administrator_email_key" ON "Administrator"("email");
 
 -- AddForeignKey
 ALTER TABLE "Races" ADD CONSTRAINT "Races_eventid_fkey" FOREIGN KEY ("eventid") REFERENCES "Events"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

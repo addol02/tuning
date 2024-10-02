@@ -107,7 +107,13 @@ export default (app: App) =>
                 error: true,
                 error_msg: "Oops!, something went wrong."
             }
-        } else { 
+        } else {
+            set.status = 200;
+
+            return {
+                success: true,
+                data: getRequestList,
+            }   
         }
     },{
         response: {

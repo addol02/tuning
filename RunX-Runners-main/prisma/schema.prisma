@@ -24,12 +24,16 @@ model Events {
   location    String
   province    String?
   logo_img    String?
+  seriesId    Int?      // Add foreign key
   races       Races[]
+
+  // Add this line to reference Series
+  series      Series?   @relation("SeriesEvents", fields: [seriesId], references: [id])
 }
 
 model Races {
   id          Int          @id @default(autoincrement())
-  race_title      String
+  title       String
   distance    Int
   starttime   DateTime     @default(now())
   endtime     DateTime     @default(now())
@@ -62,6 +66,18 @@ model Reqchangeinfo {
   racerunnerid Int
   created_at   DateTime @default(now())
 }
+model Series {
+  id                 Int      @id @default(autoincrement())
+  series_title       String
+  series_startperiod DateTime? @default(now())
+  series_endperiod   DateTime? @default(now())
+  series_cvimg       String?
+  eventid            Int
+
+  // Add this line to create a relationship
+  events             Events[] @relation("SeriesEvents")
+}
+
 
 model Administrator {
   id       Int    @id @default(autoincrement())
